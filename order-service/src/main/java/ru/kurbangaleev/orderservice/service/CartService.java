@@ -37,7 +37,7 @@ public class CartService {
         CartItem item = cart.getItems().stream()
                 .filter(i -> i.getProductId().equals(productId))
                 .findFirst()
-                .orElse(new CartItem(null, productId, 0));
+                .orElse(new CartItem(null, productId, 0, null));
 
         item.setQuantity(item.getQuantity() + quantity);
 

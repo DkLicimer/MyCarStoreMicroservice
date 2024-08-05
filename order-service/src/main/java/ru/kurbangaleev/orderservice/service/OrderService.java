@@ -40,7 +40,7 @@ public class OrderService {
         }
 
         Order order = new Order();
-        order.setUserID(userId);
+        order.setUserId(userId);
         order.setStatus("PENDING");
 
         BigDecimal totalAmount = BigDecimal.ZERO;
@@ -78,7 +78,7 @@ public class OrderService {
             throw new IllegalArgumentException("Unable to process payment for an incomplete order");
         }
 
-        boolean paymentSuccess = paymentServiceClient.processPayment(order.getUserID(), order.getTotalAmount());
+        boolean paymentSuccess = paymentServiceClient.processPayment(order.getUserId(), order.getTotalAmount());
 
         if (paymentSuccess) {
             order.setStatus("PAID");
