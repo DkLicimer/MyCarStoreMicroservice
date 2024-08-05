@@ -3,4 +3,4 @@ spring:
     name: auth-service
   cloud:
     config:
-      uri: http://configserver:8071
+      uri: http://localhost:8071

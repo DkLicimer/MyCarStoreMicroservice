@@ -10,8 +10,6 @@ eureka:
     serviceUrl:
       defaultZone: http://eurekaserver:8070/eureka/
 
-
-
 spring:
   cloud:
     loadbalancer.ribbon.enabled: false
