@@ -8,7 +8,7 @@ import ru.kurbangaleev.paymentservice.model.Payment;
 import ru.kurbangaleev.paymentservice.service.PaymentService;
 
 @RestController
-@RequestMapping("/api/payment")
+@RequestMapping("/api/payments")
 public class PaymentController {
 
     @Autowired

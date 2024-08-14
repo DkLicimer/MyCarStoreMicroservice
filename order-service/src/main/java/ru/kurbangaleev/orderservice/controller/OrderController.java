@@ -3,12 +3,18 @@ package ru.kurbangaleev.orderservice.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.kurbangaleev.orderservice.dto.OrderDto;
 import ru.kurbangaleev.orderservice.model.Order;
 import ru.kurbangaleev.orderservice.service.OrderService;
 
+import javax.validation.Valid;
+import java.util.List;
+
 @RestController
-@RequestMapping("/api/order")
+@RequestMapping("/api/orders")
 public class OrderController {
     private final OrderService orderService;
 
@@ -18,17 +24,26 @@ public class OrderController {
     }
 
     @PostMapping
-    public ResponseEntity<Order> createOrder(@RequestParam Long userId, @RequestParam Long productID) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.createOrder(userId, productID));
+    public ResponseEntity<OrderDto> createOrder(@RequestBody @Valid OrderDto orderDto) {
+        OrderDto createdOrder = orderService.createOrder(orderDto);
+        return new ResponseEntity<>(createdOrder, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{orderId}")
-    public ResponseEntity<Order> getOrder(@PathVariable Long orderId) {
-        return ResponseEntity.ok(orderService.getOrder(orderId));
+    @GetMapping("/{id}")
+    public ResponseEntity<OrderDto> getOrder(@PathVariable Long id) {
+        OrderDto order = orderService.getOrder(id);
+        return ResponseEntity.ok(order);
     }
 
-    @PostMapping("/{orderId}/payment")
-    public ResponseEntity<Order> processPayment(@PathVariable Long orderId) {
-        return ResponseEntity.ok(orderService.processPayment(orderId));
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<List<OrderDto>> getUserOrders(@PathVariable String userId) {
+        List<OrderDto> orders = orderService.getUserOrders(userId);
+        return ResponseEntity.ok(orders);
+    }
+
+    @PostMapping("/{id}/pay")
+    public ResponseEntity<Void> processPayment(@PathVariable Long id) {
+        orderService.processPayment(id);
+        return ResponseEntity.accepted().build();
     }
 }

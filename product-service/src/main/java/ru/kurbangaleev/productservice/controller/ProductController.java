@@ -5,9 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kurbangaleev.productservice.dto.ProductDto;
-import ru.kurbangaleev.productservice.model.Product;
 import ru.kurbangaleev.productservice.service.ProductService;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -20,54 +20,39 @@ public class ProductController {
         this.productService = productService;
     }
 
+    @PostMapping
+    public ResponseEntity<ProductDto> addProduct(@RequestBody @Valid ProductDto productDto) {
+        ProductDto savedProduct = productService.addProduct(productDto);
+        return new ResponseEntity<>(savedProduct, HttpStatus.CREATED);
+    }
+
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProducts() {
-        return ResponseEntity.ok(productService.getAllProducts());
+    public ResponseEntity<List<ProductDto>> getAllProducts() {
+        List<ProductDto> products = productService.getAllProducts();
+        return ResponseEntity.ok(products);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ProductDto> getProductById(@PathVariable Long id) {
-        Product product = productService.getProductById(id);
-        ProductDto productDto = convertToDto(product);
-        return ResponseEntity.ok(productDto);
-    }
-
-    @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(product));
+        ProductDto product = productService.getProductById(id);
+        return ResponseEntity.ok(product);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product productDetails) {
-        return ResponseEntity.ok(productService.updateProduct(id, productDetails));
+    public ResponseEntity<ProductDto> updateProduct(@PathVariable Long id, @RequestBody @Valid ProductDto productDto) {
+        ProductDto updatedProduct = productService.updateProduct(id, productDto);
+        return ResponseEntity.ok(updatedProduct);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Product> deleteProduct(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}/available")
-    public ResponseEntity<Boolean> isProductAvailable(@PathVariable Long id, @RequestParam int quantity) {
-        return ResponseEntity.ok(productService.isProductAvailable(id, quantity));
+    @PostMapping("/{id}/order")
+    public ResponseEntity<Void> initiateOrder(@PathVariable Long id, @RequestParam String userId) {
+        productService.initiateOrder(id, userId);
+        return ResponseEntity.accepted().build();
     }
-
-    @PutMapping("/{id}/stock")
-    public ResponseEntity<Product> updateStock(@PathVariable Long id, @RequestParam int quantity) {
-        productService.updateStock(id, quantity);
-        return ResponseEntity.noContent().build();
-    }
-
-    private ProductDto convertToDto(Product product) {
-        return new ProductDto(
-                product.getId(),
-                product.getName(),
-                product.getDescription(),
-                product.getPrice(),
-                product.getStockQuantity()
-        );
-    }
-
-
 }
