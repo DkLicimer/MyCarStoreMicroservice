@@ -63,9 +63,9 @@ public class PaymentService {
     }
 
     private void updateOrderStatus(Long orderId, PaymentStatus paymentStatus) {
-        OrderStatus orderStatus = paymentStatus == PaymentStatus.SUCCESSFUL
-                ? OrderStatus.PAID
-                : OrderStatus.PENDING_PAYMENT;
+        String orderStatus = paymentStatus == PaymentStatus.SUCCESSFUL
+                ? OrderStatus.PAID.name()
+                : OrderStatus.PENDING_PAYMENT.name();
         orderServiceClient.updateOrderStatus(orderId, orderStatus);
     }
 

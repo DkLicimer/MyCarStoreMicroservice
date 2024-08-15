@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.kurbangaleev.orderservice.dto.OrderDto;
+import ru.kurbangaleev.orderservice.enums.OrderStatus;
 import ru.kurbangaleev.orderservice.model.Order;
 import ru.kurbangaleev.orderservice.service.OrderService;
 
@@ -39,6 +40,13 @@ public class OrderController {
     public ResponseEntity<List<OrderDto>> getUserOrders(@PathVariable String userId) {
         List<OrderDto> orders = orderService.getUserOrders(userId);
         return ResponseEntity.ok(orders);
+    }
+
+    @PutMapping("/{id}/status")
+    public ResponseEntity<OrderDto> updateOrderStatus(@PathVariable Long id, @RequestParam String status) {
+        OrderStatus orderStatus = OrderStatus.valueOf(status);
+        OrderDto updatedOrder = orderService.updateOrderStatus(id, orderStatus);
+        return ResponseEntity.ok(updatedOrder);
     }
 
     @PostMapping("/{id}/pay")
